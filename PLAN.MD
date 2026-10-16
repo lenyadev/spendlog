@@ -1,11 +1,11 @@
 # Spendlog — план
 
 ## Этап 0. Каркас
-- [ ] Репозиторий, Python-окружение, структура проекта
-- [ ] FastAPI app, `/health`
+- [x] Репозиторий, Python-окружение, структура проекта
+- [x] FastAPI app, `/health`
 - [ ] Настройки через Pydantic Settings + `.env`
-- [ ] Dockerfile, docker-compose: app + PostgreSQL
-- [ ] README, `.env.example`
+- [x] Dockerfile, docker-compose: app + PostgreSQL
+- [x] README, `.env.example`
 - [ ] GitHub Actions: ruff + pytest
 
 Проверка: `docker compose up` поднимает API, `/health` возвращает 200.
