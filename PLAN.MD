@@ -3,7 +3,7 @@
 ## Этап 0. Каркас
 - [x] Репозиторий, Python-окружение, структура проекта
 - [x] FastAPI app, `/health`
-- [ ] Настройки через Pydantic Settings + `.env`
+- [x] Настройки через Pydantic Settings + `.env`
 - [x] Dockerfile, docker-compose: app + PostgreSQL
 - [x] README, `.env.example`
 - [ ] GitHub Actions: ruff + pytest
