@@ -2,6 +2,10 @@ name: CI
 
 on: [push, pull_request]
 
+env:
+  DATABASE_URL: postgresql+asyncpg://spendlog:spendlog@localhost:5432/spendlog
+  JWT_SECRET_KEY: test-secret
+
 jobs:
   lint:
     name: Ruff
