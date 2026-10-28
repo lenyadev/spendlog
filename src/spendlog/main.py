@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 
+from spendlog.settings import get_settings
 
-app = FastAPI(title="Spendlog API", version="0.1.0")
+
+settings = get_settings()
+app = FastAPI(title=settings.app_name, version=settings.app_version)
 
 
 @app.get("/health", tags=["health"])
-async def health_check() -> None:
-    return {"status": "ok"}
+async def health_check() -> dict[str, str]:
+    return {"status": "ok", "environment": settings.app_env}
