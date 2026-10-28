@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: spendlog
+      POSTGRES_PASSWORD: spendlog
+      POSTGRES_DB: spendlog
+    ports: 
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spendlog -d spendlog"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    
+volumes:
+  pgdata:
+    
