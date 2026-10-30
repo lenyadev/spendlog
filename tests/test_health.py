@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 
 from spendlog.main import app
 
-
 client = TestClient(app)
 
 

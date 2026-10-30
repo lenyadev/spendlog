@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     database_url: str
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 @lru_cache
