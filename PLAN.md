@@ -8,9 +8,9 @@
 - [x] Подключение к БД: engine, сессия, `/health/db`
 - [x] Ruff и pytest: конфиг, тест на `/health`
 - [x] PROJECT.md и PLAN.md в репозитории
-- [ ] Dockerfile, сервис `app` в docker-compose
-- [ ] GitHub Actions: ruff + pytest
-- [ ] README, `.env.example`
+- [x] Dockerfile, сервис `app` в docker-compose
+- [x] GitHub Actions: ruff + pytest
+- [x] README, `.env.example`
 
 Проверка: `docker compose up` поднимает API и БД, `/health` возвращает 200, CI зелёный.
 
