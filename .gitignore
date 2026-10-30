@@ -1,5 +1,14 @@
+# окружение и секреты
 .env
-.venv/
-__pycache__
-.ruff_cache/
+.venv
+
+# кэши
+__pycache__/
+*.pyc
 .pytest_cache/
+.ruff_cache/
+
+# редакторы и ОС
+.vscode/
+.idea/
+.DS_Store

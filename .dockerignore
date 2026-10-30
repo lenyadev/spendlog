@@ -1,0 +1,24 @@
+# окружение и секреты
+.env
+.venv
+
+# git и CI
+.git
+.github
+
+# тесты и кэши
+tests/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# редакторы и ОС
+.vscode/
+.idea/
+.DS_Store
+
+# docker-файлы не нужны внутри образа
+Dockerfile
+docker-compose.yml
+.dockerignore
