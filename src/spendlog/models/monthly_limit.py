@@ -11,7 +11,7 @@ class MonthlyLimit(Base, TimestampMixin):
     __tablename__ = "monthly_limits"
     __table_args__ = (
         UniqueConstraint("user_id", "month", name="uq_monthly_limits_user_id_month"),
-        CheckConstraint("amount > 0", name="ck_monthly_limits_amount_positive"),
+        CheckConstraint("amount > 0", name="amount_positive"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
