@@ -15,10 +15,10 @@
 Проверка: `docker compose up` поднимает API и БД, `/health` возвращает 200, CI зелёный.
 
 ## Этап 1. База данных
-- [ ] Base и общие настройки моделей
-- [ ] Модели: users, categories, transactions, monthly_limits
-- [ ] Связи, ограничения, индексы
-- [ ] Alembic init и первая миграция
+- [x] Base и общие настройки моделей
+- [x] Модели: users, categories, transactions, monthly_limits
+- [x] Связи, ограничения, индексы
+- [x] Alembic init и первая миграция
 - [ ] Отдельная тестовая БД и фикстуры pytest
 - [ ] Схема БД в README
 

@@ -31,7 +31,7 @@ class TransactionType(EnumType):
 class Transaction(Base, TimestampMixin):
     __tablename__ = "transactions"
     __table_args__ = (
-        CheckConstraint("amount > 0", name="ck_transactions_amount_positive"),
+        CheckConstraint("amount > 0", name="amount_positive"),
         Index("ix_transactions_user_id_date", "user_id", "date"),
     )
 
