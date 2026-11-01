@@ -1,8 +1,8 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from spendlog.db import get_session
 from spendlog.main import app
@@ -11,7 +11,7 @@ from spendlog.settings import get_settings
 
 
 async def ensure_test_database(url: str) -> None:
-    parsed = make_url(url) 
+    parsed = make_url(url)
     admin_engine = create_async_engine(
         parsed.set(database="postgres"), isolation_level="AUTOCOMMIT"
     )
@@ -23,6 +23,7 @@ async def ensure_test_database(url: str) -> None:
         if not exists:
             await conn.execute(text(f'CREATE DATABASE "{parsed.database}"'))
     await admin_engine.dispose()
+
 
 @pytest.fixture(scope="session")
 async def test_engine():
