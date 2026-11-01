@@ -77,12 +77,6 @@ curl http://localhost:8000/health/db
 
 ## Разработка
 
-Тесты идут в отдельную БД `spendlog_test` (в том же контейнере Postgres). Создать один раз:
-
-```bash
-docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d postgres -c "CREATE DATABASE spendlog_test;"'
-```
-
 ```bash
 uv run ruff check .
 uv run ruff format .
