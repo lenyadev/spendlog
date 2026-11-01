@@ -99,3 +99,4 @@ CI (GitHub Actions) запускает ruff и pytest на каждый push и 
 | `POSTGRES_USER` | Имя пользователя PostgreSQL (для контейнера) |
 | `POSTGRES_PASSWORD` | Пароль пользователя PostgreSQL (для контейнера) |
 | `POSTGRES_DB` | Имя основной БД (для контейнера) |
+| `SECRET_KEY` | Секретный ключ для JWT |
