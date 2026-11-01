@@ -27,7 +27,7 @@
 ## Этап 2. Авторизация
 - [ ] POST /auth/register
 - [ ] POST /auth/login
-- [ ] Хеширование паролей
+- [x] Хеширование паролей
 - [ ] JWT access token
 - [ ] Dependency: current_user
 - [ ] Тесты: регистрация, вход, доступ без токена
