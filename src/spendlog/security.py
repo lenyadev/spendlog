@@ -1,4 +1,9 @@
+from datetime import UTC, datetime, timedelta
+
+import jwt
 from pwdlib import PasswordHash
+
+from spendlog.settings import get_settings
 
 password_hash = PasswordHash.recommended()
 
@@ -9,3 +14,14 @@ def hash_password(password: str) -> str:
 
 def verify_password(password: str, hashed: str) -> bool:
     return password_hash.verify(password, hashed)
+
+
+ALGORITHM = "HS256"
+DUMMY_HASH = hash_password("dummy-password")
+
+
+def create_access_token(user_id: int) -> str:
+    settings = get_settings()
+    expire = datetime.now(UTC) + timedelta(minutes=settings.access_token_expire_minutes)
+    payload = {"sub": str(user_id), "exp": expire}
+    return jwt.encode(payload=payload, key=settings.secret_key, algorithm=ALGORITHM)
