@@ -9,12 +9,29 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: spendlog
+          POSTGRES_PASSWORD: spendlog
+          POSTGRES_DB: spendlog
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U spendlog -d spendlog"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
       DATABASE_URL: postgresql+asyncpg://spendlog:spendlog@localhost:5432/spendlog
+      TEST_DATABASE_URL: postgresql+asyncpg://spendlog:spendlog@localhost:5432/spendlog_test
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
+      - name: Create test database
+        run: PGPASSWORD=spendlog psql -h localhost -U spendlog -d spendlog -c "CREATE DATABASE spendlog_test;"
       - run: uv run pytest -v
