@@ -32,6 +32,4 @@ jobs:
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - name: Create test database
-        run: PGPASSWORD=spendlog psql -h localhost -U spendlog -d spendlog -c "CREATE DATABASE spendlog_test;"
       - run: uv run pytest -v
