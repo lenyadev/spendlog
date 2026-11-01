@@ -1,4 +1,12 @@
-from spendlog.security import hash_password, verify_password
+import jwt
+
+from spendlog.security import (
+    ALGORITHM,
+    create_access_token,
+    hash_password,
+    verify_password,
+)
+from spendlog.settings import get_settings
 
 
 def test_hash_password() -> None:
@@ -19,3 +27,10 @@ def test_verify_password() -> None:
 def test_verify_wrong_password() -> None:
     hashed_password = hash_password("secret")
     assert not verify_password("wrong", hashed_password)
+
+
+def test_create_access_token() -> None:
+    token = create_access_token(1)
+    payload = jwt.decode(token, get_settings().secret_key, algorithms=[ALGORITHM])
+    assert payload["sub"] == "1"
+    assert "exp" in payload

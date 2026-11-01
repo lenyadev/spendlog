@@ -25,10 +25,10 @@
 Проверка: миграция создаёт все таблицы, `downgrade` откатывает без ошибок, тесты не трогают рабочую БД.
 
 ## Этап 2. Авторизация
-- [ ] POST /auth/register
-- [ ] POST /auth/login
+- [x] POST /auth/register
+- [x] POST /auth/login
 - [x] Хеширование паролей
-- [ ] JWT access token
+- [x] JWT access token
 - [ ] Dependency: current_user
 - [ ] Тесты: регистрация, вход, доступ без токена
 

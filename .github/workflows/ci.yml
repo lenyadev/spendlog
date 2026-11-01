@@ -26,6 +26,7 @@ jobs:
     env:
       DATABASE_URL: postgresql+asyncpg://spendlog:spendlog@localhost:5432/spendlog
       TEST_DATABASE_URL: postgresql+asyncpg://spendlog:spendlog@localhost:5432/spendlog_test
+      SECRET_KEY: ci-secret-key-not-for-production-0123456789
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
