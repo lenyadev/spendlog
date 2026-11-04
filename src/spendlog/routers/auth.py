@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
+from spendlog.dependencies import CurrentUserDep
 from spendlog.models import User
 from spendlog.schemas.auth import Token, UserCreate, UserRead
 from spendlog.security import (
@@ -46,3 +47,8 @@ async def login(
         )
 
     return Token(access_token=create_access_token(user.id))
+
+
+@router.get("/me", response_model=UserRead)
+async def me(user: CurrentUserDep) -> User:
+    return user

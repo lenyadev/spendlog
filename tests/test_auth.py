@@ -1,3 +1,5 @@
+from datetime import UTC, datetime, timedelta
+
 import jwt
 from sqlalchemy import select
 
@@ -81,3 +83,59 @@ async def test_login_with_incorrect_username(client):
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect email or password"
+
+
+async def test_me_success(client, auth_headers, user_credentials):
+    response = await client.get("/auth/me", headers=auth_headers)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["email"] == user_credentials["email"]
+    assert "id" in body
+    assert "password_hash" not in body
+
+
+async def test_me_without_header(client):
+    response = await client.get("/auth/me")
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Not authenticated"
+
+
+async def test_me_with_garbage_token(client):
+    response = await client.get("/auth/me", headers={"Authorization": "Bearer garbage"})
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Could not validate credentials"
+    assert response.headers["WWW-Authenticate"] == "Bearer"
+
+
+async def test_me_with_expired_token(client, user_credentials):
+    register = await client.post("/auth/register", json=user_credentials)
+    user_id = register.json()["id"]
+
+    token = jwt.encode(
+        {"sub": str(user_id), "exp": datetime.now(UTC) - timedelta(minutes=1)},
+        get_settings().secret_key,
+        algorithm=ALGORITHM,
+    )
+    response = await client.get(
+        "/auth/me", headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 401
+    assert response.headers["WWW-Authenticate"] == "Bearer"
+
+
+async def test_me_after_user_deleted(client, auth_headers, session, user_credentials):
+    user = await session.scalar(
+        select(User).where(User.email == user_credentials["email"])
+    )
+    assert user is not None
+    await session.delete(user)
+    await session.commit()
+
+    response = await client.get("/auth/me", headers=auth_headers)
+
+    assert response.status_code == 401
+    assert response.headers["WWW-Authenticate"] == "Bearer"
