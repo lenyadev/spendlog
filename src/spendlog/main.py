@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import text
 
+from spendlog.dependencies import SessionDep
 from spendlog.routers import auth_router
-from spendlog.session import SessionDep
 from spendlog.settings import get_settings
 
 settings = get_settings()
