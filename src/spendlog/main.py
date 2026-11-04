@@ -2,13 +2,14 @@ from fastapi import FastAPI, HTTPException
 from sqlalchemy import text
 
 from spendlog.dependencies import SessionDep
-from spendlog.routers import auth_router
+from spendlog.routers import all_routers
 from spendlog.settings import get_settings
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version=settings.app_version)
 
-app.include_router(auth_router)
+for router in all_routers:
+    app.include_router(router)
 
 
 @app.get("/health", tags=["health"])
