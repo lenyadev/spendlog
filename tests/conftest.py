@@ -73,3 +73,26 @@ async def client(session):
     ) as ac:
         yield ac
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+async def user_credentials() -> dict[str, str]:
+    return {"email": "user@test.com", "password": "password123"}
+
+
+@pytest.fixture
+async def auth_headers(client, user_credentials) -> dict[str, str]:
+    register = await client.post("/auth/register", json=user_credentials)
+    assert register.status_code == 201
+
+    login = await client.post(
+        "/auth/login",
+        data={
+            "username": user_credentials["email"],
+            "password": user_credentials["password"],
+        },
+    )
+    assert login.status_code == 200
+
+    token = login.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}

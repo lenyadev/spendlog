@@ -65,7 +65,7 @@ def test_decode_expired_token() -> None:
 
 def test_decode_token_signed_with_other_key() -> None:
     token = make_token(
-        {"sub": "1", "exp": future()}, key="other-key-0123456789-0123456789"
+        {"sub": "1", "exp": future()}, key="other-key-0123456789-0123456789!"
     )
     assert decode_access_token(token) is None
 
