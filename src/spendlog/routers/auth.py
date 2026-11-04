@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 
 from spendlog.crud import user as user_crud
-from spendlog.dependencies import CurrentUserDep
+from spendlog.dependencies import CurrentUserDep, SessionDep
 from spendlog.models import User
 from spendlog.schemas.auth import Token, UserCreate, UserRead
 from spendlog.security import (
@@ -14,7 +14,6 @@ from spendlog.security import (
     hash_password,
     verify_password,
 )
-from spendlog.session import SessionDep
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

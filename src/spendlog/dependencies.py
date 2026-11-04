@@ -2,11 +2,14 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from spendlog.crud import user as user_crud
+from spendlog.db import get_session
 from spendlog.models import User
 from spendlog.security import decode_access_token
-from spendlog.session import SessionDep
+
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 

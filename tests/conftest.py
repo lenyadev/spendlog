@@ -10,6 +10,21 @@ from spendlog.models.base import Base
 from spendlog.settings import get_settings
 
 
+async def register_and_login(client, credentials: dict[str, str]) -> dict[str, str]:
+    register = await client.post("/auth/register", json=credentials)
+    assert register.status_code == 201
+
+    login = await client.post(
+        "/auth/login",
+        data={
+            "username": credentials["email"],
+            "password": credentials["password"],
+        },
+    )
+    assert login.status_code == 200
+    return {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+
 async def ensure_test_database(url: str) -> None:
     parsed = make_url(url)
     admin_engine = create_async_engine(
@@ -81,18 +96,15 @@ async def user_credentials() -> dict[str, str]:
 
 
 @pytest.fixture
+def other_user_credentials() -> dict[str, str]:
+    return {"email": "other@test.com", "password": "password123"}
+
+
+@pytest.fixture
 async def auth_headers(client, user_credentials) -> dict[str, str]:
-    register = await client.post("/auth/register", json=user_credentials)
-    assert register.status_code == 201
+    return await register_and_login(client, user_credentials)
 
-    login = await client.post(
-        "/auth/login",
-        data={
-            "username": user_credentials["email"],
-            "password": user_credentials["password"],
-        },
-    )
-    assert login.status_code == 200
 
-    token = login.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+@pytest.fixture
+async def other_auth_headers(client, other_user_credentials) -> dict[str, str]:
+    return await register_and_login(client, other_user_credentials)
