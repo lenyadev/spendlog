@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
+from spendlog.crud import user as user_crud
 from spendlog.models import User
 from spendlog.security import decode_access_token
 from spendlog.session import SessionDep
@@ -25,7 +26,7 @@ async def get_current_user(
     if user_id is None:
         raise unauthorized()
 
-    user = await session.get(User, user_id)
+    user = await user_crud.get_by_id(session=session, user_id=user_id)
     if user is None:
         raise unauthorized()
 

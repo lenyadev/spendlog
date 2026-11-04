@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
+from spendlog.crud import user as user_crud
 from spendlog.dependencies import CurrentUserDep
 from spendlog.models import User
 from spendlog.schemas.auth import Token, UserCreate, UserRead
@@ -21,21 +21,23 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserRead)
 async def register(data: UserCreate, session: SessionDep) -> User:
-    user = User(email=data.email, password_hash=hash_password(data.password))
-    session.add(user)
+    hashed_password = hash_password(data.password)
     try:
-        await session.commit()
+        return await user_crud.create(
+            session=session, email=data.email, password_hash=hashed_password
+        )
     except IntegrityError:
         await session.rollback()
-        raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already registered")
-    return user
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Email already registered"
+        ) from None
 
 
 @router.post("/login", response_model=Token)
 async def login(
     form: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep
 ) -> Token:
-    user = await session.scalar(select(User).where(User.email == form.username))
+    user = await user_crud.get_by_email(session=session, email=form.username)
     hashed = user.password_hash if user else DUMMY_HASH
     password_ok = verify_password(form.password, hashed)
 
