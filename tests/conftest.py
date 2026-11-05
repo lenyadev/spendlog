@@ -40,6 +40,18 @@ async def ensure_test_database(url: str) -> None:
     await admin_engine.dispose()
 
 
+@pytest.fixture
+def create_category(client):
+    async def _create(headers: dict[str, str], name: str = "Food") -> dict:
+        response = await client.post(
+            "/categories", json={"name": name}, headers=headers
+        )
+        assert response.status_code == 201
+        return response.json()
+
+    return _create
+
+
 @pytest.fixture(scope="session")
 async def test_engine():
     settings = get_settings()
@@ -91,7 +103,7 @@ async def client(session):
 
 
 @pytest.fixture
-async def user_credentials() -> dict[str, str]:
+def user_credentials() -> dict[str, str]:
     return {"email": "user@test.com", "password": "password123"}
 
 
