@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from spendlog.crud import category as category_crud
@@ -7,6 +9,8 @@ from spendlog.dependencies import CurrentUserDep, SessionDep
 from spendlog.models import Transaction
 from spendlog.schemas.transaction import (
     TransactionCreate,
+    TransactionFilters,
+    TransactionPage,
     TransactionRead,
     TransactionUpdate,
 )
@@ -32,6 +36,26 @@ async def ensure_category(
 ) -> None:
     if await category_crud.get(session, user_id, category_id) is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Category not found")
+
+
+@router.get("", response_model=TransactionPage)
+async def get_transaction_page(
+    filters: Annotated[TransactionFilters, Query()],
+    session: SessionDep,
+    user: CurrentUserDep,
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+) -> TransactionPage:
+    transactions = await transaction_crud.list_for_user(
+        session, user.id, filters, limit, offset
+    )
+    total = await transaction_crud.count_for_user(session, user.id, filters)
+    return TransactionPage(
+        items=[TransactionRead.model_validate(t) for t in transactions],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
 
 
 @router.get("/{transaction_id}", response_model=TransactionRead)
