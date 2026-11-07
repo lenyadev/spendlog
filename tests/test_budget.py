@@ -126,6 +126,7 @@ def test_calc_usage_decimal_values():
 
 def test_calc_usage_percent_has_two_places():
     _, percent = calc_usage(Decimal("7"), Decimal("1"))
+    assert percent is not None
     assert percent == Decimal("14.29")
     assert percent.as_tuple().exponent == -2
 
