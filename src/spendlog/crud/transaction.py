@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from sqlalchemy import ColumnElement, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -5,6 +8,7 @@ from spendlog.models import Transaction
 from spendlog.schemas.transaction import (
     TransactionCreate,
     TransactionFilters,
+    TransactionType,
     TransactionUpdate,
 )
 
@@ -22,6 +26,19 @@ def build_conditions(
     if filters.date_to is not None:
         conditions.append(Transaction.date <= filters.date_to)
     return conditions
+
+
+async def sum_expenses(
+    session: AsyncSession, user_id: int, start: datetime, end: datetime
+) -> Decimal:
+    stmt = select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+        Transaction.user_id == user_id,
+        Transaction.type == TransactionType.expense,
+        Transaction.date >= start,
+        Transaction.date < end,
+    )
+    result = await session.scalar(stmt)
+    return Decimal(result or 0)
 
 
 async def get(
