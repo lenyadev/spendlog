@@ -8,3 +8,6 @@ def test_routers_are_registered() -> None:
     assert "/auth/me" in paths
     assert "/categories" in paths
     assert "/categories/{category_id}" in paths
+    assert "/transactions/{transaction_id}" in paths
+    assert "/transactions" in paths
+    assert "/reports/categories" in paths

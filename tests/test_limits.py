@@ -8,16 +8,6 @@ from spendlog.budget import month_bounds
 NOON = timedelta(hours=12)
 
 
-def current_bounds() -> tuple[datetime, datetime]:
-    return month_bounds(datetime.now(UTC).date())
-
-
-async def post_limit(client, headers, month: str, amount: str):
-    return await client.post(
-        "/limits", json={"month": month, "amount": amount}, headers=headers
-    )
-
-
 async def add_transaction(
     client,
     headers,
@@ -39,6 +29,16 @@ async def add_transaction(
     assert response.status_code == 201
 
 
+def current_bounds() -> tuple[datetime, datetime]:
+    return month_bounds(datetime.now(UTC).date())
+
+
+async def post_limit(client, headers, month: str, amount: str):
+    return await client.post(
+        "/limits", json={"month": month, "amount": amount}, headers=headers
+    )
+
+
 async def get_usage(client, headers) -> dict:
     response = await client.get("/limits/current", headers=headers)
     assert response.status_code == 200
@@ -48,7 +48,11 @@ async def get_usage(client, headers) -> dict:
 # --- GET /limits/current: расчёт ---
 
 
-async def test_current_usage_without_limit(client, auth_headers, create_category):
+async def test_current_usage_without_limit(
+    client,
+    auth_headers,
+    create_category,
+):
     start, _ = current_bounds()
     category = await create_category(auth_headers)
     await add_transaction(client, auth_headers, category["id"], "40.00", start + NOON)
@@ -83,7 +87,14 @@ async def test_current_usage_without_limit(client, auth_headers, create_category
     ],
 )
 async def test_current_usage_with_limit(
-    client, auth_headers, create_category, limit, expenses, spent, remaining, percent
+    client,
+    auth_headers,
+    create_category,
+    limit,
+    expenses,
+    spent,
+    remaining,
+    percent,
 ):
     start, _ = current_bounds()
     category = await create_category(auth_headers)
