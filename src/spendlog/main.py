@@ -4,8 +4,10 @@ from sqlalchemy import text
 from spendlog.dependencies import SessionDep
 from spendlog.routers import all_routers
 from spendlog.settings import get_settings
+from spendlog.logging_config import setup_logging
 
 settings = get_settings()
+logger = setup_logging(settings.log_level)
 app = FastAPI(title=settings.app_name, version=settings.app_version)
 
 for router in all_routers:
@@ -14,6 +16,8 @@ for router in all_routers:
 
 @app.get("/health", tags=["health"])
 async def health_check() -> dict[str, str]:
+    logger.debug("x")
+    logger.error("y")
     return {
         "status": "ok",
         "environment": settings.app_env,
