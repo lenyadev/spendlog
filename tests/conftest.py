@@ -1,5 +1,8 @@
+from collections.abc import Generator
+
 import pytest
 from httpx import ASGITransport, AsyncClient
+from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -120,3 +123,11 @@ async def auth_headers(client, user_credentials) -> dict[str, str]:
 @pytest.fixture
 async def other_auth_headers(client, other_user_credentials) -> dict[str, str]:
     return await register_and_login(client, other_user_credentials)
+
+
+@pytest.fixture
+def logs() -> Generator:
+    records: list = []
+    handler_id = logger.add(records.append, level="DEBUG")
+    yield records
+    logger.remove(handler_id)
