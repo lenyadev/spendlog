@@ -2,10 +2,8 @@ import time
 import uuid
 from collections.abc import Awaitable, Callable
 
-from fastapi import FastAPI, HTTPException, Request, Response
-from sqlalchemy import text
+from fastapi import FastAPI, Request, Response
 
-from spendlog.dependencies import SessionDep
 from spendlog.logging_config import setup_logging
 from spendlog.routers import all_routers
 from spendlog.settings import get_settings
@@ -37,20 +35,3 @@ async def logging_middleware(
         ).log(level, "Request completed")
 
     return response
-
-
-@app.get("/health", tags=["health"])
-async def health_check() -> dict[str, str]:
-    return {
-        "status": "ok",
-        "environment": settings.app_env,
-    }
-
-
-@app.get("/health/db", tags=["health"])
-async def health_check_db(session: SessionDep) -> dict[str, str]:
-    try:
-        await session.execute(text("SELECT 1"))
-    except Exception:
-        raise HTTPException(status_code=503, detail="database unavailable")
-    return {"database": "ok"}

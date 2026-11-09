@@ -10,3 +10,10 @@ def test_health() -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+
+
+def test_health_check_db() -> None:
+    response = client.get("/health/db")
+
+    assert response.status_code == 200
+    assert response.json()["database"] == "ok"
