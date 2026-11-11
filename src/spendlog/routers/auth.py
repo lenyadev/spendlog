@@ -11,8 +11,8 @@ from spendlog.schemas.auth import Token, UserCreate, UserRead
 from spendlog.security import (
     DUMMY_HASH,
     create_access_token,
-    hash_password,
-    verify_password,
+    hash_password_async,
+    verify_password_async,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserRead)
 async def register(data: UserCreate, session: SessionDep) -> User:
-    hashed_password = hash_password(data.password)
+    hashed_password = await hash_password_async(data.password)
     try:
         return await user_crud.create(
             session=session, email=data.email, password_hash=hashed_password
@@ -38,7 +38,7 @@ async def login(
 ) -> Token:
     user = await user_crud.get_by_email(session=session, email=form.username)
     hashed = user.password_hash if user else DUMMY_HASH
-    password_ok = verify_password(form.password, hashed)
+    password_ok = await verify_password_async(form.password, hashed)
 
     if user is None or not password_ok:
         raise HTTPException(
