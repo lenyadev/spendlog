@@ -1,24 +1,32 @@
 # окружение и секреты
-.env
-.venv
+# Исключаем env-файлы на ЛЮБОЙ глубине, но оставляем шаблон
+**/.env
+**/.env.*
+!**/.env.example
 
-# git и CI
+# Виртуальные окружения (на любой глубине)
+**/.venv/
+**/venv/
+
+# git и CI 
 .git
 .github
 
-# тесты и кэши
-tests/
-__pycache__/
-*.pyc
-.pytest_cache/
-.ruff_cache/
+# Python-кэши и артефакты 
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
 
-# редакторы и ОС
+# тесты 
+tests/
+
+# редакторы и ОС 
 .vscode/
 .idea/
-.DS_Store
+**/.DS_Store
 
-# docker-файлы не нужны внутри образа
+# docker-файлы не нужны внутри образа 
 Dockerfile
 docker-compose.yml
 .dockerignore
