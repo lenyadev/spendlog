@@ -34,6 +34,9 @@ RUN groupadd -g 10001 appgroup && \
 COPY --from=builder --chown=appuser:appgroup /app/.venv /app/.venv
 COPY --from=builder --chown=appuser:appgroup /app/src /app/src
 
+COPY --chown=appuser:appgroup alembic.ini ./
+COPY --chown=appuser:appgroup migrations/ ./migrations/
+
 USER 10001
 
 EXPOSE 8000
