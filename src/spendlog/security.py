@@ -1,3 +1,4 @@
+import asyncio
 from datetime import UTC, datetime, timedelta
 
 import jwt
@@ -14,6 +15,14 @@ def hash_password(password: str) -> str:
 
 def verify_password(password: str, hashed: str) -> bool:
     return password_hash.verify(password, hashed)
+
+
+async def hash_password_async(password: str) -> str:
+    return await asyncio.to_thread(hash_password, password)
+
+
+async def verify_password_async(password: str, hashed: str) -> bool:
+    return await asyncio.to_thread(verify_password, password, hashed)
 
 
 ALGORITHM = "HS256"
