@@ -3,6 +3,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from spendlog.logging_config import setup_logging
@@ -12,6 +13,14 @@ from spendlog.settings import get_settings
 settings = get_settings()
 logger = setup_logging(settings.log_level)
 app = FastAPI(title=settings.app_name, version=settings.app_version)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Authotization", "Content-Type"],
+)
 
 for router in all_routers:
     app.include_router(router)
