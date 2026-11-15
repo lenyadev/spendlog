@@ -1,6 +1,7 @@
 from enum import StrEnum
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,7 @@ class Settings(BaseSettings):
     secret_key: str
     access_token_expire_minutes: int = 30
     log_level: LogLevel = LogLevel.INFO
+    cors_origins: list[str] = Field(default_factory=list)
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
