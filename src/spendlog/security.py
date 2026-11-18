@@ -1,4 +1,6 @@
 import asyncio
+import hashlib
+import secrets
 from datetime import UTC, datetime, timedelta
 
 import jwt
@@ -48,3 +50,13 @@ def decode_access_token(token: str) -> int | None:
         return int(payload["sub"])
     except jwt.InvalidTokenError, ValueError:
         return None
+
+
+def hash_refresh_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def create_refresh_token() -> tuple[str, str]:
+    raw_token = secrets.token_urlsafe(32)  # этот отдаем пользователю
+    token_hash = hash_refresh_token(raw_token)  # его хэш кладем в БД
+    return raw_token, token_hash
