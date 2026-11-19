@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 
@@ -34,7 +34,9 @@ async def register(data: UserCreate, session: SessionDep) -> User:
 
 @router.post("/login", response_model=Token)
 async def login(
-    form: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep
+    form: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: SessionDep,
+    response: Response,
 ) -> Token:
     user = await user_crud.get_by_email(session=session, email=form.username)
     hashed = user.password_hash if user else DUMMY_HASH
@@ -47,6 +49,8 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    # response.set_cookie(key="refresh_token", value=refresh_token, expires=)
+    # user_crud.set_refresh_token()
     return Token(access_token=create_access_token(user.id))
 
 
