@@ -1194,6 +1194,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-env"
+version = "1.8.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "python-dotenv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/17/b4/5fa05af040ae0f3a2c26448bf351e57cd901b757809eeb3636da426535a7/pytest_env-1.8.7.tar.gz", hash = "sha256:917e169e829e328aca7cbe0426801672f1243a7b03bbbccd687490d2a3c6725e", size = 61904, upload-time = "2026-11-19T21:39:27.335Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/0e/25f006ef702ad0cf98bd012ed424e7da659f7d100252216999f516ce7fb9/pytest_env-1.8.7-py3-none-any.whl", hash = "sha256:7093379c9c5003cdf11d140d23f3cd28c31734407f666e0992726cb3a3b09df7", size = 64440, upload-time = "2026-11-19T21:39:25.987Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.4"
 source = { registry = "https://pypi.org/simple" }
@@ -1420,6 +1433,7 @@ dev = [
     { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "pytest-env" },
     { name = "ruff" },
 ]
 
@@ -1442,6 +1456,7 @@ dev = [
     { name = "httpx2", specifier = ">=2.16.0" },
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.4.1" },
+    { name = "pytest-env", specifier = ">=1.8.7" },
     { name = "ruff", specifier = ">=0.17.3" },
 ]
 
