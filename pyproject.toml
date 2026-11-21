@@ -32,6 +32,7 @@ dev = [
     "httpx2>=2.16.0",
     "pytest>=9.2.0",
     "pytest-asyncio>=1.4.1",
+    "pytest-env>=1.8.7",
     "ruff>=0.17.3",
 ]
 
@@ -49,4 +50,5 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
+env = ["COOKIE_SECURE=false"]
 

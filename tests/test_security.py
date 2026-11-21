@@ -7,8 +7,10 @@ import pytest
 from spendlog.security import (
     ALGORITHM,
     create_access_token,
+    create_refresh_token,
     decode_access_token,
     hash_password_async,
+    hash_refresh_token,
     verify_password_async,
 )
 from spendlog.settings import get_settings
@@ -166,3 +168,28 @@ def test_decode_token_with_non_numeric_sub(sub: str) -> None:
 def test_decode_unsigned_token_alg_none() -> None:
     token = jwt.encode({"sub": "1", "exp": future()}, key=None, algorithm="none")
     assert decode_access_token(token) is None
+
+
+# Refresh token tests
+
+
+def test_hashes_of_one_token_equal() -> None:
+    raw_token, hash = create_refresh_token()
+    hash2 = hash_refresh_token(raw_token)
+    assert hash == hash2
+
+
+def test_hashes_are_different() -> None:
+    _, token_hash = create_refresh_token()
+    _, token_hash2 = create_refresh_token()
+    assert token_hash != token_hash2
+
+
+def test_token_and_hash_different() -> None:
+    raw_token, token_hash = create_refresh_token()
+    assert token_hash != raw_token
+
+
+def test_token_format() -> None:
+    _, token_hash = create_refresh_token()
+    assert len(token_hash) == 64
