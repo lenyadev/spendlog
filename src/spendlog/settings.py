@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     test_database_url: str | None = None
     secret_key: str
     access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 14
     log_level: LogLevel = LogLevel.INFO
     cors_origins: list[str] = Field(default_factory=list)
 
