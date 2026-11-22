@@ -58,19 +58,16 @@ async def test_hash_password_async_uses_unique_salt():
     assert h1 != h2  # argon2 солит каждый хэш
 
 
-@pytest.mark.asyncio
 async def test_verify_password_async_ok():
     hashed = await hash_password_async("hunter2")
     assert await verify_password_async("hunter2", hashed) is True
 
 
-@pytest.mark.asyncio
 async def test_verify_password_async_wrong_password():
     hashed = await hash_password_async("hunter2")
     assert await verify_password_async("wrong", hashed) is False
 
 
-@pytest.mark.asyncio
 async def test_hash_password_async_does_not_block_event_loop():
     """
     Пока argon2 считает хэш в пуле потоков, event loop должен продолжать
@@ -97,7 +94,6 @@ async def test_hash_password_async_does_not_block_event_loop():
     )
 
 
-@pytest.mark.asyncio
 async def test_verify_password_async_does_not_block_event_loop():
     hashed = await hash_password_async("hunter2")
     ticks = [0]

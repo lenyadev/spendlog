@@ -3,31 +3,6 @@ from decimal import Decimal
 
 import pytest
 
-UTC = UTC
-
-
-async def _create_category(client, headers, name="Food"):
-    response = await client.post("/categories", json={"name": name}, headers=headers)
-    assert response.status_code == 201, response.text
-    return response.json()["id"]
-
-
-async def _create_transaction(
-    client, headers, category_id, amount, at, type_="expense"
-):
-    response = await client.post(
-        "/transactions",
-        json={
-            "type": type_,
-            "amount": amount,
-            "date": at.isoformat(),
-            "category_id": category_id,
-        },
-        headers=headers,
-    )
-    assert response.status_code == 201, response.text
-    return response.json()
-
 
 async def _get_report(client, headers, **params):
     return await client.get("/reports/categories", params=params, headers=headers)
@@ -43,54 +18,68 @@ async def test_empty_period(client, auth_headers):
     assert Decimal(body["total"]) == Decimal("0")
 
 
-async def test_multiple_categories_ordered(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    rent = await _create_category(client, auth_headers, "Rent")
-    fun = await _create_category(client, auth_headers, "Fun")
-    await _create_transaction(
-        client, auth_headers, food, "100.00", datetime(2024, 11, 5, 12, tzinfo=UTC)
+async def test_multiple_categories_ordered(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    rent = await create_category(auth_headers, "Rent")
+    fun = await create_category(auth_headers, "Fun")
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "100.00",
+        datetime(2024, 11, 5, 12, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, food, "50.00", datetime(2024, 11, 6, 12, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "50.00",
+        datetime(2024, 11, 6, 12, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, rent, "500.00", datetime(2024, 11, 7, 12, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        rent["id"],
+        "500.00",
+        datetime(2024, 11, 7, 12, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, fun, "30.00", datetime(2024, 11, 8, 12, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        fun["id"],
+        "30.00",
+        datetime(2024, 11, 8, 12, tzinfo=UTC).isoformat(),
     )
 
     response = await _get_report(
         client, auth_headers, date_from="2024-11-01", date_to="2024-11-30"
     )
     body = response.json()
-    ids = [item["category_id"] for item in body["items"]]
-    assert ids == [rent, food, fun]
+    ids = sorted(item["category_id"] for item in body["items"])
+    assert ids == [food["id"], rent["id"], fun["id"]]
     totals = {item["category_id"]: Decimal(item["total"]) for item in body["items"]}
-    assert totals[food] == Decimal("150.00")
-    assert totals[rent] == Decimal("500.00")
-    assert totals[fun] == Decimal("30.00")
+    assert totals[food["id"]] == Decimal("150.00")
+    assert totals[rent["id"]] == Decimal("500.00")
+    assert totals[fun["id"]] == Decimal("30.00")
     assert Decimal(body["total"]) == Decimal("680.00")
 
 
-async def test_default_both_types(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    salary = await _create_category(client, auth_headers, "Salary")
-    await _create_transaction(
-        client,
+async def test_default_both_types(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    salary = await create_category(auth_headers, "Salary")
+    await create_transaction(
         auth_headers,
-        food,
+        food["id"],
         "100.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="expense",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="expense",
     )
-    await _create_transaction(
-        client,
+    await create_transaction(
         auth_headers,
-        salary,
+        salary["id"],
         "3000.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="income",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="income",
     )
 
     response = await _get_report(
@@ -99,27 +88,27 @@ async def test_default_both_types(client, auth_headers):
     body = response.json()
     assert Decimal(body["total"]) == Decimal("3100.00")
     totals = {item["category_id"]: Decimal(item["total"]) for item in body["items"]}
-    assert totals == {food: Decimal("100.00"), salary: Decimal("3000.00")}
+    assert totals == {food["id"]: Decimal("100.00"), salary["id"]: Decimal("3000.00")}
 
 
-async def test_explicit_expense_only(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    salary = await _create_category(client, auth_headers, "Salary")
-    await _create_transaction(
-        client,
+async def test_explicit_expense_only(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    salary = await create_category(auth_headers, "Salary")
+    await create_transaction(
         auth_headers,
-        food,
+        food["id"],
         "100.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="expense",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="expense",
     )
-    await _create_transaction(
-        client,
+    await create_transaction(
         auth_headers,
-        salary,
+        salary["id"],
         "3000.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="income",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="income",
     )
 
     response = await _get_report(
@@ -131,27 +120,25 @@ async def test_explicit_expense_only(client, auth_headers):
     )
     body = response.json()
     assert Decimal(body["total"]) == Decimal("100.00")
-    assert [item["category_id"] for item in body["items"]] == [food]
+    assert [item["category_id"] for item in body["items"]] == [food["id"]]
 
 
-async def test_income_only(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    salary = await _create_category(client, auth_headers, "Salary")
-    await _create_transaction(
-        client,
+async def test_income_only(auth_headers, create_category, create_transaction, client):
+    food = await create_category(auth_headers, "Food")
+    salary = await create_category(auth_headers, "Salary")
+    await create_transaction(
         auth_headers,
-        food,
+        food["id"],
         "100.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="expense",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="expense",
     )
-    await _create_transaction(
-        client,
+    await create_transaction(
         auth_headers,
-        salary,
+        salary["id"],
         "3000.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
-        type_="income",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
+        type="income",
     )
 
     response = await _get_report(
@@ -164,33 +151,42 @@ async def test_income_only(client, auth_headers):
     body = response.json()
     assert Decimal(body["total"]) == Decimal("3000.00")
     assert len(body["items"]) == 1
-    assert body["items"][0]["category_id"] == salary
+    assert body["items"][0]["category_id"] == salary["id"]
 
 
-async def test_period_boundaries(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    await _create_transaction(
-        client,
+async def test_period_boundaries(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    await create_transaction(
         auth_headers,
-        food,
+        food["id"],
         "10.00",
-        datetime(2024, 11, 4, 23, 59, 59, tzinfo=UTC),
+        datetime(2024, 11, 4, 23, 59, 59, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, food, "20.00", datetime(2024, 11, 5, 0, 0, 0, tzinfo=UTC)
-    )
-    await _create_transaction(
-        client, auth_headers, food, "30.00", datetime(2024, 11, 7, 12, 0, 0, tzinfo=UTC)
-    )
-    await _create_transaction(
-        client,
+    await create_transaction(
         auth_headers,
-        food,
-        "40.00",
-        datetime(2024, 11, 10, 23, 59, 59, tzinfo=UTC),
+        food["id"],
+        "20.00",
+        datetime(2024, 11, 5, 0, 0, 0, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, food, "50.00", datetime(2024, 11, 11, 0, 0, 0, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "30.00",
+        datetime(2024, 11, 7, 12, 0, 0, tzinfo=UTC).isoformat(),
+    )
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "40.00",
+        datetime(2024, 11, 10, 23, 59, 59, tzinfo=UTC).isoformat(),
+    )
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "50.00",
+        datetime(2024, 11, 11, 0, 0, 0, tzinfo=UTC).isoformat(),
     )
 
     response = await _get_report(
@@ -200,11 +196,16 @@ async def test_period_boundaries(client, auth_headers):
     assert Decimal(body["total"]) == Decimal("90.00")
 
 
-async def test_empty_category_excluded(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    unused = await _create_category(client, auth_headers, "Unused")
-    await _create_transaction(
-        client, auth_headers, food, "100.00", datetime(2024, 11, 5, tzinfo=UTC)
+async def test_empty_category_excluded(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    unused = await create_category(auth_headers, "Unused")
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "100.00",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
     )
 
     response = await _get_report(
@@ -212,22 +213,26 @@ async def test_empty_category_excluded(client, auth_headers):
     )
     body = response.json()
     ids = [item["category_id"] for item in body["items"]]
-    assert unused not in ids
-    assert food in ids
+    assert unused["id"] not in ids
+    assert food["id"] in ids
 
 
-async def test_other_user_isolated(client, auth_headers, other_auth_headers):
-    my_cat = await _create_category(client, auth_headers, "Mine")
-    other_cat = await _create_category(client, other_auth_headers, "Theirs")
-    await _create_transaction(
-        client, auth_headers, my_cat, "100.00", datetime(2024, 11, 5, tzinfo=UTC)
+async def test_other_user_isolated(
+    auth_headers, other_auth_headers, create_category, create_transaction, client
+):
+    my_cat = await create_category(auth_headers, "Mine")
+    other_cat = await create_category(other_auth_headers, "Theirs")
+    await create_transaction(
+        auth_headers,
+        my_cat["id"],
+        "100.00",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client,
+    await create_transaction(
         other_auth_headers,
-        other_cat,
+        other_cat["id"],
         "999.00",
-        datetime(2024, 11, 5, tzinfo=UTC),
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
     )
 
     response = await _get_report(
@@ -235,21 +240,32 @@ async def test_other_user_isolated(client, auth_headers, other_auth_headers):
     )
     body = response.json()
     ids = [item["category_id"] for item in body["items"]]
-    assert ids == [my_cat]
+    assert ids == [my_cat["id"]]
     assert Decimal(body["total"]) == Decimal("100.00")
 
 
-async def test_matches_transactions_list(client, auth_headers):
-    food = await _create_category(client, auth_headers, "Food")
-    rent = await _create_category(client, auth_headers, "Rent")
-    await _create_transaction(
-        client, auth_headers, food, "100.00", datetime(2024, 11, 5, tzinfo=UTC)
+async def test_matches_transactions_list(
+    auth_headers, create_category, create_transaction, client
+):
+    food = await create_category(auth_headers, "Food")
+    rent = await create_category(auth_headers, "Rent")
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "100.00",
+        datetime(2024, 11, 5, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, food, "50.00", datetime(2024, 11, 6, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        food["id"],
+        "50.00",
+        datetime(2024, 11, 6, tzinfo=UTC).isoformat(),
     )
-    await _create_transaction(
-        client, auth_headers, rent, "500.00", datetime(2024, 11, 7, tzinfo=UTC)
+    await create_transaction(
+        auth_headers,
+        rent["id"],
+        "500.00",
+        datetime(2024, 11, 7, tzinfo=UTC).isoformat(),
     )
 
     tx_response = await client.get(
