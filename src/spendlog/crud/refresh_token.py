@@ -34,11 +34,6 @@ async def get_by_hash(session: AsyncSession, token_hash: str) -> RefreshToken | 
     return await session.scalar(stmt)
 
 
-async def revoke(session: AsyncSession, refresh_token: RefreshToken) -> None:
-    refresh_token.revoked_at = datetime.now(tz=UTC)
-    await session.flush()
-
-
 async def revoke_family(session: AsyncSession, family_id: UUID) -> None:
     stmt = (
         update(RefreshToken)
@@ -46,3 +41,29 @@ async def revoke_family(session: AsyncSession, family_id: UUID) -> None:
         .values({"revoked_at": datetime.now(tz=UTC)})
     )
     await session.execute(stmt)
+
+
+async def rotate(
+    session: AsyncSession,
+    refresh_token: RefreshToken,
+    new_expires_at: datetime,
+    new_token_hash: str,
+) -> RefreshToken:
+    refresh_token.used_at = datetime.now(tz=UTC)
+    await session.flush()
+    return await create(
+        session,
+        refresh_token.user_id,
+        new_expires_at,
+        refresh_token.family_id,
+        new_token_hash,
+    )
+
+
+def is_valid(refresh_token: RefreshToken) -> bool:
+    now = datetime.now(tz=UTC)
+    return (
+        (refresh_token.used_at is None)
+        and (refresh_token.revoked_at is None)
+        and (refresh_token.expires_at > now)
+    )
