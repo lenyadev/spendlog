@@ -8,38 +8,17 @@ from spendlog.budget import month_bounds
 NOON = timedelta(hours=12)
 
 
-async def add_transaction(
-    client,
-    headers,
-    category_id: int,
-    amount: str,
-    at: datetime,
-    type_: str = "expense",
-) -> None:
-    response = await client.post(
-        "/transactions",
-        json={
-            "type": type_,
-            "amount": amount,
-            "date": at.isoformat(),
-            "category_id": category_id,
-        },
-        headers=headers,
-    )
-    assert response.status_code == 201
-
-
-def current_bounds() -> tuple[datetime, datetime]:
+def _current_bounds() -> tuple[datetime, datetime]:
     return month_bounds(datetime.now(UTC).date())
 
 
-async def post_limit(client, headers, month: str, amount: str):
+async def _post_limit(client, headers, month: str, amount: str):
     return await client.post(
         "/limits", json={"month": month, "amount": amount}, headers=headers
     )
 
 
-async def get_usage(client, headers) -> dict:
+async def _get_usage(client, headers) -> dict:
     response = await client.get("/limits/current", headers=headers)
     assert response.status_code == 200
     return response.json()
@@ -49,15 +28,15 @@ async def get_usage(client, headers) -> dict:
 
 
 async def test_current_usage_without_limit(
-    client,
-    auth_headers,
-    create_category,
+    client, auth_headers, create_category, create_transaction
 ):
-    start, _ = current_bounds()
+    start, _ = _current_bounds()
     category = await create_category(auth_headers)
-    await add_transaction(client, auth_headers, category["id"], "40.00", start + NOON)
+    await create_transaction(
+        auth_headers, category["id"], "40.00", (start + NOON).isoformat()
+    )
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert body["month"] == start.date().isoformat()
     assert body["limit"] is None
@@ -90,22 +69,23 @@ async def test_current_usage_with_limit(
     client,
     auth_headers,
     create_category,
+    create_transaction,
     limit,
     expenses,
     spent,
     remaining,
     percent,
 ):
-    start, _ = current_bounds()
+    start, _ = _current_bounds()
     category = await create_category(auth_headers)
-    created = await post_limit(client, auth_headers, start.date().isoformat(), limit)
+    created = await _post_limit(client, auth_headers, start.date().isoformat(), limit)
     assert created.status_code == 201
     for amount in expenses:
-        await add_transaction(
-            client, auth_headers, category["id"], amount, start + NOON
+        await create_transaction(
+            auth_headers, category["id"], amount, (start + NOON).isoformat()
         )
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert body["month"] == start.date().isoformat()
     assert Decimal(body["limit"]) == Decimal(limit)
@@ -117,79 +97,99 @@ async def test_current_usage_with_limit(
 # --- GET /limits/current: что именно считается ---
 
 
-async def test_incomes_are_ignored(client, auth_headers, create_category):
-    start, _ = current_bounds()
+async def test_incomes_are_ignored(
+    create_transaction, client, auth_headers, create_category
+):
+    start, _ = _current_bounds()
     category = await create_category(auth_headers)
-    await add_transaction(client, auth_headers, category["id"], "100.00", start + NOON)
-    await add_transaction(
-        client, auth_headers, category["id"], "500.00", start + NOON, type_="income"
+    await create_transaction(
+        auth_headers, category["id"], "100.00", (start + NOON).isoformat()
+    )
+    await create_transaction(
+        auth_headers,
+        category["id"],
+        "500.00",
+        (start + NOON).isoformat(),
+        type="income",
     )
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert Decimal(body["spent"]) == Decimal("100.00")
 
 
-async def test_neighbor_months_are_ignored(client, auth_headers, create_category):
-    start, end = current_bounds()
+async def test_neighbor_months_are_ignored(
+    client, create_transaction, auth_headers, create_category
+):
+    start, end = _current_bounds()
     prev_start, _ = month_bounds(start.date() - timedelta(days=1))
     category = await create_category(auth_headers)
-    await add_transaction(
-        client, auth_headers, category["id"], "70.00", prev_start + NOON
+    await create_transaction(
+        auth_headers, category["id"], "70.00", (prev_start + NOON).isoformat()
     )
-    await add_transaction(client, auth_headers, category["id"], "80.00", end + NOON)
-    await add_transaction(client, auth_headers, category["id"], "10.00", start + NOON)
+    await create_transaction(
+        auth_headers, category["id"], "80.00", (end + NOON).isoformat()
+    )
+    await create_transaction(
+        auth_headers, category["id"], "10.00", (start + NOON).isoformat()
+    )
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert Decimal(body["spent"]) == Decimal("10.00")
 
 
-async def test_month_borders(client, auth_headers, create_category):
-    start, end = current_bounds()
+async def test_month_borders(client, create_transaction, auth_headers, create_category):
+    start, end = _current_bounds()
     category = await create_category(auth_headers)
     # ровно первый момент месяца: считается
-    await add_transaction(client, auth_headers, category["id"], "20.00", start)
+    await create_transaction(auth_headers, category["id"], "20.00", start.isoformat())
     # последний микросекундный момент месяца: считается
-    await add_transaction(
-        client, auth_headers, category["id"], "5.00", end - timedelta(microseconds=1)
+    await create_transaction(
+        auth_headers,
+        category["id"],
+        "5.00",
+        (end - timedelta(microseconds=1)).isoformat(),
     )
     # ровно первый момент следующего месяца: не считается
-    await add_transaction(client, auth_headers, category["id"], "30.00", end)
+    await create_transaction(auth_headers, category["id"], "30.00", end.isoformat())
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert Decimal(body["spent"]) == Decimal("25.00")
 
 
 async def test_other_users_expenses_are_not_counted(
-    client, auth_headers, other_auth_headers, create_category
+    client, auth_headers, other_auth_headers, create_category, create_transaction
 ):
-    start, _ = current_bounds()
+    start, _ = _current_bounds()
     category_a = await create_category(auth_headers)
     category_b = await create_category(other_auth_headers)
-    await add_transaction(
-        client, auth_headers, category_a["id"], "100.00", start + NOON
+    await create_transaction(
+        auth_headers, category_a["id"], "100.00", (start + NOON).isoformat()
     )
-    await add_transaction(
-        client, other_auth_headers, category_b["id"], "30.00", start + NOON
+    await create_transaction(
+        other_auth_headers,
+        category_b["id"],
+        "30.00",
+        (start + NOON).isoformat(),
     )
 
-    body_a = await get_usage(client, auth_headers)
-    body_b = await get_usage(client, other_auth_headers)
+    body_a = await _get_usage(client, auth_headers)
+    body_b = await _get_usage(client, other_auth_headers)
 
     assert Decimal(body_a["spent"]) == Decimal("100.00")
     assert Decimal(body_b["spent"]) == Decimal("30.00")
 
 
 async def test_limit_of_another_month_is_not_used(client, auth_headers):
-    start, end = current_bounds()
+    start, end = _current_bounds()
     prev_start, _ = month_bounds(start.date() - timedelta(days=1))
     for month in (prev_start.date(), end.date()):
-        created = await post_limit(client, auth_headers, month.isoformat(), "999.00")
+        created = await _post_limit(client, auth_headers, month.isoformat(), "999.00")
         assert created.status_code == 201
 
-    body = await get_usage(client, auth_headers)
+    body = await _get_usage(client, auth_headers)
 
     assert body["limit"] is None
     assert body["remaining"] is None
@@ -199,7 +199,7 @@ async def test_limit_of_another_month_is_not_used(client, auth_headers):
 
 
 async def test_create_limit_normalizes_month(client, auth_headers):
-    response = await post_limit(client, auth_headers, "2026-11-17", "500.00")
+    response = await _post_limit(client, auth_headers, "2026-11-17", "500.00")
 
     assert response.status_code == 201
     body = response.json()
@@ -210,17 +210,17 @@ async def test_create_limit_normalizes_month(client, auth_headers):
 
 @pytest.mark.parametrize("second_date", ["2026-11-01", "2026-11-30"])
 async def test_duplicate_month_returns_409(client, auth_headers, second_date):
-    first = await post_limit(client, auth_headers, "2026-11-17", "500.00")
-    second = await post_limit(client, auth_headers, second_date, "700.00")
+    first = await _post_limit(client, auth_headers, "2026-11-17", "500.00")
+    second = await _post_limit(client, auth_headers, second_date, "700.00")
 
     assert first.status_code == 201
     assert second.status_code == 409
 
 
 async def test_put_changes_amount(client, auth_headers):
-    start, _ = current_bounds()
+    start, _ = _current_bounds()
     month = start.date().isoformat()
-    await post_limit(client, auth_headers, month, "500.00")
+    await _post_limit(client, auth_headers, month, "500.00")
 
     response = await client.put(
         "/limits",
@@ -234,7 +234,7 @@ async def test_put_changes_amount(client, auth_headers):
     assert response.status_code == 200
     assert response.json()["month"] == month
     assert Decimal(response.json()["amount"]) == Decimal("800.00")
-    usage = await get_usage(client, auth_headers)
+    usage = await _get_usage(client, auth_headers)
     assert Decimal(usage["limit"]) == Decimal("800.00")
 
 
@@ -277,9 +277,9 @@ async def test_limit_invalid_data(client, auth_headers, method, payload):
 async def test_limits_are_isolated_between_users(
     client, auth_headers, other_auth_headers
 ):
-    start, _ = current_bounds()
+    start, _ = _current_bounds()
     month = start.date().isoformat()
-    a = await post_limit(client, auth_headers, month, "500.00")
+    a = await _post_limit(client, auth_headers, month, "500.00")
     assert a.status_code == 201
 
     # B не может изменить лимит A: у B на этот месяц лимита нет
@@ -287,18 +287,18 @@ async def test_limits_are_isolated_between_users(
         "/limits", json={"month": month, "amount": "1.00"}, headers=other_auth_headers
     )
     assert put_b.status_code == 404
-    assert (await get_usage(client, other_auth_headers))["limit"] is None
-    assert Decimal((await get_usage(client, auth_headers))["limit"]) == Decimal(
+    assert (await _get_usage(client, other_auth_headers))["limit"] is None
+    assert Decimal((await _get_usage(client, auth_headers))["limit"]) == Decimal(
         "500.00"
     )
 
     # на тот же месяц у B свой лимит создаётся
-    b = await post_limit(client, other_auth_headers, month, "700.00")
+    b = await _post_limit(client, other_auth_headers, month, "700.00")
     assert b.status_code == 201
-    assert Decimal((await get_usage(client, auth_headers))["limit"]) == Decimal(
+    assert Decimal((await _get_usage(client, auth_headers))["limit"]) == Decimal(
         "500.00"
     )
-    assert Decimal((await get_usage(client, other_auth_headers))["limit"]) == Decimal(
+    assert Decimal((await _get_usage(client, other_auth_headers))["limit"]) == Decimal(
         "700.00"
     )
 

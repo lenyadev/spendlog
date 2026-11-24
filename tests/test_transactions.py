@@ -3,46 +3,17 @@ from decimal import Decimal
 
 import pytest
 
-DATE = "2026-11-05T12:00:00+00:00"
-
-
-def make_payload(category_id: int, **overrides) -> dict:
-    payload = {
-        "type": "expense",
-        "amount": "10.50",
-        "date": DATE,
-        "category_id": category_id,
-        "comment": "lunch",
-    }
-    return payload | overrides
-
-
-@pytest.fixture
-def create_transaction(client):
-    async def _create(headers: dict[str, str], category_id: int, **overrides) -> dict:
-        response = await client.post(
-            "/transactions",
-            json=make_payload(category_id, **overrides),
-            headers=headers,
-        )
-        assert response.status_code == 201
-        return response.json()
-
-    return _create
-
 
 # --- CRUD ---
-
-
-@pytest.mark.parametrize("type_", ["expense", "income"])
+@pytest.mark.parametrize("type", ["expense", "income"])
 async def test_create_transaction(
-    auth_headers, type_, create_category, create_transaction
+    auth_headers, type, create_category, create_transaction
 ):
     category = await create_category(auth_headers)
 
-    body = await create_transaction(auth_headers, category["id"], type=type_)
+    body = await create_transaction(auth_headers, category["id"], type=type)
 
-    assert body["type"] == type_
+    assert body["type"] == type
     assert Decimal(body["amount"]) == Decimal("10.50")
     assert datetime.fromisoformat(body["date"]) == datetime(2026, 11, 5, 12, tzinfo=UTC)
     assert body["category_id"] == category["id"]
@@ -52,10 +23,10 @@ async def test_create_transaction(
 
 
 async def test_create_transaction_without_comment(
-    client, auth_headers, create_category
+    client, auth_headers, create_category, make_transaction_payload
 ):
     category = await create_category(auth_headers)
-    payload = make_payload(category["id"])
+    payload = make_transaction_payload(category["id"])
     del payload["comment"]
 
     response = await client.post("/transactions", json=payload, headers=auth_headers)
@@ -65,7 +36,7 @@ async def test_create_transaction_without_comment(
 
 
 async def test_get_update_delete_transaction(
-    client, auth_headers, create_category, create_transaction
+    client, auth_headers, create_category, create_transaction, make_transaction_payload
 ):
     food = await create_category(auth_headers, "Food")
     salary = await create_category(auth_headers, "Salary")
@@ -78,7 +49,7 @@ async def test_get_update_delete_transaction(
 
     put = await client.put(
         url,
-        json=make_payload(
+        json=make_transaction_payload(
             salary["id"], type="income", amount="2000.00", comment="updated"
         ),
         headers=auth_headers,
@@ -109,13 +80,13 @@ async def test_get_update_delete_transaction(
     ],
 )
 async def test_create_transaction_invalid_data(
-    client, auth_headers, create_category, overrides
+    client, auth_headers, create_category, overrides, make_transaction_payload
 ):
     category = await create_category(auth_headers)
 
     response = await client.post(
         "/transactions",
-        json=make_payload(category["id"], **overrides),
+        json=make_transaction_payload(category["id"], **overrides),
         headers=auth_headers,
     )
 
@@ -131,8 +102,8 @@ async def test_create_transaction_invalid_data(
         ("DELETE", "/transactions/1"),
     ],
 )
-async def test_transactions_require_auth(client, method, url):
-    response = await client.request(method, url, json=make_payload(1))
+async def test_transactions_require_auth(client, method, url, make_transaction_payload):
+    response = await client.request(method, url, json=make_transaction_payload(1))
     assert response.status_code == 401
 
 
@@ -140,7 +111,12 @@ async def test_transactions_require_auth(client, method, url):
 
 
 async def test_other_user_cannot_access_foreign_transaction(
-    client, auth_headers, other_auth_headers, create_category, create_transaction
+    client,
+    auth_headers,
+    other_auth_headers,
+    create_category,
+    create_transaction,
+    make_transaction_payload,
 ):
     category = await create_category(auth_headers)
     transaction = await create_transaction(auth_headers, category["id"])
@@ -150,7 +126,7 @@ async def test_other_user_cannot_access_foreign_transaction(
     get = await client.get(url, headers=other_auth_headers)
     put = await client.put(
         url,
-        json=make_payload(other_category["id"], amount="999.00"),
+        json=make_transaction_payload(other_category["id"], amount="999.00"),
         headers=other_auth_headers,
     )
     delete = await client.delete(url, headers=other_auth_headers)
@@ -165,13 +141,13 @@ async def test_other_user_cannot_access_foreign_transaction(
 
 
 async def test_cannot_create_transaction_in_foreign_category(
-    client, auth_headers, other_auth_headers, create_category
+    client, auth_headers, other_auth_headers, create_category, make_transaction_payload
 ):
     category = await create_category(auth_headers)
 
     response = await client.post(
         "/transactions",
-        json=make_payload(category["id"]),
+        json=make_transaction_payload(category["id"]),
         headers=other_auth_headers,
     )
 
@@ -179,7 +155,12 @@ async def test_cannot_create_transaction_in_foreign_category(
 
 
 async def test_cannot_move_transaction_to_foreign_category(
-    client, auth_headers, other_auth_headers, create_category, create_transaction
+    client,
+    auth_headers,
+    other_auth_headers,
+    create_category,
+    create_transaction,
+    make_transaction_payload,
 ):
     own_category = await create_category(auth_headers, "Food")
     foreign_category = await create_category(other_auth_headers, "Other")
@@ -187,7 +168,7 @@ async def test_cannot_move_transaction_to_foreign_category(
 
     response = await client.put(
         f"/transactions/{transaction['id']}",
-        json=make_payload(foreign_category["id"]),
+        json=make_transaction_payload(foreign_category["id"]),
         headers=auth_headers,
     )
 
@@ -195,18 +176,18 @@ async def test_cannot_move_transaction_to_foreign_category(
 
 
 async def test_missing_category_looks_like_foreign_one(
-    client, auth_headers, other_auth_headers, create_category
+    client, auth_headers, other_auth_headers, create_category, make_transaction_payload
 ):
     foreign = await create_category(auth_headers)
 
     foreign_response = await client.post(
         "/transactions",
-        json=make_payload(foreign["id"]),
+        json=make_transaction_payload(foreign["id"]),
         headers=other_auth_headers,
     )
     missing_response = await client.post(
         "/transactions",
-        json=make_payload(999999),
+        json=make_transaction_payload(999999),
         headers=other_auth_headers,
     )
 

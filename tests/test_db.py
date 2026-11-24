@@ -14,7 +14,7 @@ async def test_schema_created(test_engine):
 
 async def test_insert_user(session):
     session.add(User(email="a@test.com", password_hash="a"))
-    await session.commit()
+    await session.flush()
 
     count = await session.scalar(select(func.count()).select_from(User))
     assert count == 1

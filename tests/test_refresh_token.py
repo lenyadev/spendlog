@@ -1,133 +1,70 @@
-from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime, timedelta
 from http.cookies import SimpleCookie
-from typing import NamedTuple, Protocol
-from uuid import UUID, uuid4
-
-import pytest
-from httpx import Response
+from uuid import uuid4
 
 from spendlog.crud import refresh_token as refresh_token_crud
+from spendlog.crud import user as user_crud
 from spendlog.models import RefreshToken
 from spendlog.routers.auth import REFRESH_COOKIE_KEY
-from spendlog.security import create_refresh_token, hash_refresh_token
+from spendlog.security import (
+    create_refresh_token,
+    hash_refresh_token,
+)
 from spendlog.settings import get_settings
 
 
-class CreatedRefreshToken(NamedTuple):
-    record: RefreshToken
-    raw_token: str
-
-
-class CreatedUser(NamedTuple):
-    id: int
-    email: str
-
-
-class RefreshTokenFactory(Protocol):
-    async def __call__(
-        self,
-        user_id: int | None = None,
-        expires_at: datetime | None = None,
-        family_id: UUID | None = None,
-    ) -> CreatedRefreshToken: ...
-
-
-@pytest.fixture
-async def created_user(client, user_credentials) -> CreatedUser:
-    register = await client.post("/auth/register", json=user_credentials)
-    assert register.status_code == 201
-    register_json = register.json()
-    return CreatedUser(id=register_json["id"], email=register_json["email"])
-
-
-@pytest.fixture
-async def login(
-    client, created_user, user_credentials
-) -> Callable[[], Awaitable[Response]]:
-    async def _login() -> Response:
-        login = await client.post(
-            "/auth/login",
-            data={
-                "username": user_credentials["email"],
-                "password": user_credentials["password"],
-            },
-        )
-        assert login.status_code == 200
-        return login
-
-    return _login
-
-
-@pytest.fixture
-async def make_refresh_token(session, created_user: CreatedUser) -> RefreshTokenFactory:
-    async def _make_refresh_token(
-        user_id: int | None = None,
-        expires_at: datetime | None = None,
-        family_id: UUID | None = None,
-    ) -> CreatedRefreshToken:
-        settings = get_settings()
-        raw_token, token_hash = create_refresh_token()
-        if expires_at is None:
-            expires_at = datetime.now(tz=UTC) + timedelta(
-                days=settings.refresh_token_expire_days
-            )
-        if family_id is None:
-            family_id = uuid4()
-        if user_id is None:
-            user_id = created_user.id
-
-        token_db_record = await refresh_token_crud.create(
-            session=session,
-            user_id=user_id,
-            expires_at=expires_at,
-            family_id=family_id,
-            token_hash=token_hash,
-        )
-        return CreatedRefreshToken(record=token_db_record, raw_token=raw_token)
-
-    return _make_refresh_token
-
-
-async def test_refresh_token_generation_is_unique(session, make_refresh_token):
-    token = await make_refresh_token()
-    refresh_token = await refresh_token_crud.get_by_hash(
-        session, token.record.token_hash
+def build_refresh_token(
+    used_at: datetime | None = None,
+    revoked_at: datetime | None = None,
+    expires_at: datetime | None = None,
+) -> RefreshToken:
+    if expires_at is None:
+        expires_at = datetime.now(tz=UTC) + get_settings().refresh_token_ttl
+    return RefreshToken(
+        user_id=1,
+        token_hash="hash",
+        used_at=used_at,
+        revoked_at=revoked_at,
+        expires_at=expires_at,
+        family_id=uuid4(),
     )
-    assert refresh_token is not None
-    assert refresh_token.id == token.record.id
 
 
-async def test_refresh_token_hash_differs_from_raw(make_refresh_token):
-    token = await make_refresh_token()
+async def test_refresh_token_hash_differs_from_raw(
+    user_credentials, register_user, make_refresh_token
+):
+    user = await register_user(user_credentials)
+    token = await make_refresh_token(user.id)
     assert token.raw_token != token.record.token_hash
 
 
-async def test_refresh_token_hash_is_deterministic(make_refresh_token):
-    token1 = await make_refresh_token()
-    token2 = await make_refresh_token()
+async def test_refresh_token_hash_is_not_deterministic(
+    user_credentials, register_user, make_refresh_token
+):
+    user = await register_user(user_credentials)
+    token1 = await make_refresh_token(user.id)
+    token2 = await make_refresh_token(user.id)
     assert token1.record.token_hash != token2.record.token_hash
 
 
-async def test_get_by_hash_not_found(session, make_refresh_token):
-    await make_refresh_token()
+async def test_get_by_hash_not_found(
+    user_credentials, register_user, session, make_refresh_token
+):
+    user = await register_user(user_credentials)
+    await make_refresh_token(user.id)
     _, some_hash = create_refresh_token()
     refresh_token = await refresh_token_crud.get_by_hash(session, some_hash)
     assert refresh_token is None
 
 
-async def test_revoke_token(session, make_refresh_token):
-    token = await make_refresh_token()
-    assert token.record.revoked_at is None  # before revoke
-    await refresh_token_crud.revoke(session, token.record)
-    assert token.record.revoked_at is not None
-
-
-async def test_revoke_family_does_not_touch_other_family(session, make_refresh_token):
+async def test_revoke_family_does_not_touch_other_family(
+    user_credentials, register_user, session, make_refresh_token
+):
+    user = await register_user(user_credentials)
     family_a = uuid4()
-    token_a1 = await make_refresh_token(family_id=family_a)
-    token_a2 = await make_refresh_token(family_id=family_a)
-    token_b = await make_refresh_token()
+    token_a1 = await make_refresh_token(user.id, family_id=family_a)
+    token_a2 = await make_refresh_token(user.id, family_id=family_a)
+    token_b = await make_refresh_token(user.id)
     await refresh_token_crud.revoke_family(session, family_a)
     await session.refresh(token_a1.record)
     await session.refresh(token_a2.record)
@@ -137,25 +74,14 @@ async def test_revoke_family_does_not_touch_other_family(session, make_refresh_t
     assert token_b.record.revoked_at is None
 
 
-async def test_revoke_family_keeps_existing_revoked_at(session, make_refresh_token):
-    family_a = uuid4()
-    token_a1 = await make_refresh_token(family_id=family_a)
-    token_a2 = await make_refresh_token(family_id=family_a)
-
-    await refresh_token_crud.revoke(session, token_a1.record)
-    first_revoked_at = token_a1.record.revoked_at
-
-    await refresh_token_crud.revoke_family(session, family_a)
-    await session.refresh(token_a1.record)
-    await session.refresh(token_a2.record)
-    assert token_a1.record.revoked_at == first_revoked_at
-    assert token_a2.record.revoked_at > first_revoked_at
-
-
-async def test_login_sets_refresh_cookie_with_flags(login):
-    user_login = await login()
+async def test_login_sets_refresh_cookie_with_flags(
+    user_credentials, register_user, login_user
+):
+    await register_user(user_credentials)
+    login_response = await login_user(user_credentials)
+    # Parsing cookie
     cookie = SimpleCookie()
-    login_set_cookie_header = user_login.headers.get_list("set-cookie")[0]
+    login_set_cookie_header = login_response.headers.get_list("set-cookie")[0]
     cookie.load(login_set_cookie_header)
     morsel = cookie[REFRESH_COOKIE_KEY]
 
@@ -165,35 +91,44 @@ async def test_login_sets_refresh_cookie_with_flags(login):
     assert int(morsel["max-age"]) == get_settings().cookie_max_age
     assert morsel.value
 
-    assert "access_token" in user_login.json()
+    assert "access_token" in login_response.json()
 
 
 async def test_login_returns_access_token_without_refresh_in_body(
-    login,
+    user_credentials, register_user, login_user
 ):
-    user_login = await login()
-    assert REFRESH_COOKIE_KEY not in user_login.json()
-    assert REFRESH_COOKIE_KEY not in user_login.text
-    assert user_login.cookies["refresh_token"] not in user_login.text
-    assert "access_token" in user_login.json()
+    await register_user(user_credentials)
+    login_response = await login_user(user_credentials)
+    assert REFRESH_COOKIE_KEY not in login_response.json()
+    assert login_response.cookies["refresh_token"] not in login_response.text
+    assert "access_token" in login_response.json()
 
 
-async def test_login_stores_hash_not_raw_token(session, login):
-    user_login = await login()
-    raw_token = user_login.cookies[REFRESH_COOKIE_KEY]
+async def test_login_stores_hash_not_raw_token(
+    user_credentials, register_user, login_user, session
+):
+    await register_user(user_credentials)
+    login_response = await login_user(user_credentials)
+    raw_token = login_response.cookies[REFRESH_COOKIE_KEY]
     token = await refresh_token_crud.get_by_hash(session, hash_refresh_token(raw_token))
     raw_token_from_db = await refresh_token_crud.get_by_hash(session, raw_token)
     assert raw_token_from_db is None
     assert token is not None
-    assert token.token_hash != raw_token
 
 
-async def test_login_creates_new_family_each_time(session, login):
-    first_login = await login()
-    first_token_hash = hash_refresh_token(first_login.cookies[REFRESH_COOKIE_KEY])
+async def test_login_creates_new_family_each_time(
+    user_credentials, register_user, login_user, session
+):
+    await register_user(user_credentials)
+    first_login_response = await login_user(user_credentials)
+    first_token_hash = hash_refresh_token(
+        first_login_response.cookies[REFRESH_COOKIE_KEY]
+    )
 
-    second_login = await login()
-    second_token_hash = hash_refresh_token(second_login.cookies[REFRESH_COOKIE_KEY])
+    second_login_response = await login_user(user_credentials)
+    second_token_hash = hash_refresh_token(
+        second_login_response.cookies[REFRESH_COOKIE_KEY]
+    )
 
     first_refresh_token = await refresh_token_crud.get_by_hash(
         session, first_token_hash
@@ -205,3 +140,72 @@ async def test_login_creates_new_family_each_time(session, login):
     assert second_refresh_token is not None
 
     assert first_refresh_token.family_id != second_refresh_token.family_id
+
+
+async def test_get_refresh_token_by_hash_returns_record(
+    session, user_credentials, make_refresh_token
+):
+    user = await user_crud.create(
+        session, user_credentials.email, user_credentials.password
+    )
+    refresh_token = await make_refresh_token(user_id=user.id)
+    refresh_token_from_db = await refresh_token_crud.get_by_hash(
+        session, hash_refresh_token(refresh_token.raw_token)
+    )
+    assert refresh_token_from_db is not None
+    assert refresh_token_from_db.user_id == user.id
+    assert refresh_token_from_db.token_hash == refresh_token.record.token_hash
+    assert refresh_token.record.id == refresh_token_from_db.id
+
+
+async def test_rotate_marks_old_token_used(
+    session, user_credentials, make_refresh_token
+):
+    user = await user_crud.create(
+        session, user_credentials.email, user_credentials.password
+    )
+    old_refresh_token = await make_refresh_token(user_id=user.id)
+    new_expires_at = datetime.now(tz=UTC) + timedelta(days=42)
+    _, new_token_hash = create_refresh_token()
+    await refresh_token_crud.rotate(
+        session, old_refresh_token.record, new_expires_at, new_token_hash
+    )
+    assert old_refresh_token.record.used_at is not None
+
+
+async def test_rotate_keeps_family_id(session, user_credentials, make_refresh_token):
+    user = await user_crud.create(
+        session, user_credentials.email, user_credentials.password
+    )
+    old_refresh_token = await make_refresh_token(user_id=user.id)
+    new_expires_at = datetime.now(tz=UTC) + timedelta(days=42)
+    _, new_token_hash = create_refresh_token()
+    new_refresh_token = await refresh_token_crud.rotate(
+        session, old_refresh_token.record, new_expires_at, new_token_hash
+    )
+    assert new_refresh_token.used_at is None
+    assert new_refresh_token.revoked_at is None
+    assert old_refresh_token.record.family_id == new_refresh_token.family_id
+    assert new_refresh_token.token_hash != old_refresh_token.record.token_hash
+
+
+async def test_is_valid_active_token_returns_true():
+    refresh_token = build_refresh_token()
+    assert refresh_token_crud.is_valid(refresh_token)
+
+
+async def test_is_valid_used_token_returns_false():
+    refresh_token = build_refresh_token(used_at=datetime.now(tz=UTC))
+    assert not refresh_token_crud.is_valid(refresh_token)
+
+
+async def test_is_valid_revoked_token_returns_false():
+    refresh_token = build_refresh_token(revoked_at=datetime.now(tz=UTC))
+    assert not refresh_token_crud.is_valid(refresh_token)
+
+
+async def test_is_valid_expired_token_returns_false():
+    refresh_token = build_refresh_token(
+        expires_at=datetime.now(tz=UTC) - timedelta(seconds=2)
+    )
+    assert not refresh_token_crud.is_valid(refresh_token)

@@ -142,7 +142,7 @@ async def test_delete_category_with_transactions(
 ):
     category = await create_category(auth_headers, "Food")
     user = await session.scalar(
-        select(User).where(User.email == user_credentials["email"])
+        select(User).where(User.email == user_credentials.email)
     )
     assert user is not None
     session.add(
@@ -154,7 +154,7 @@ async def test_delete_category_with_transactions(
             date=datetime.now(UTC),
         )
     )
-    await session.commit()
+    await session.flush()
 
     response = await client.delete(
         f"/categories/{category['id']}", headers=auth_headers
