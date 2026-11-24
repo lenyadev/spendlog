@@ -13,10 +13,22 @@ from spendlog.security import (
 from spendlog.settings import get_settings
 
 
-def build_refresh_token(used_at: datetime | None = None, revoked_at: datetime | None = None, expires_at: datetime | None = None) -> RefreshToken:
+def build_refresh_token(
+    used_at: datetime | None = None,
+    revoked_at: datetime | None = None,
+    expires_at: datetime | None = None,
+) -> RefreshToken:
     if expires_at is None:
         expires_at = datetime.now(tz=UTC) + get_settings().refresh_token_ttl
-    return RefreshToken(user_id=1, token_hash="hash", used_at=used_at, revoked_at=revoked_at, expires_at=expires_at, family_id=uuid4())
+    return RefreshToken(
+        user_id=1,
+        token_hash="hash",
+        used_at=used_at,
+        revoked_at=revoked_at,
+        expires_at=expires_at,
+        family_id=uuid4(),
+    )
+
 
 async def test_refresh_token_hash_differs_from_raw(
     user_credentials, register_user, make_refresh_token
@@ -181,15 +193,19 @@ async def test_is_valid_active_token_returns_true():
     refresh_token = build_refresh_token()
     assert refresh_token_crud.is_valid(refresh_token)
 
+
 async def test_is_valid_used_token_returns_false():
     refresh_token = build_refresh_token(used_at=datetime.now(tz=UTC))
     assert not refresh_token_crud.is_valid(refresh_token)
 
+
 async def test_is_valid_revoked_token_returns_false():
     refresh_token = build_refresh_token(revoked_at=datetime.now(tz=UTC))
     assert not refresh_token_crud.is_valid(refresh_token)
-    
+
+
 async def test_is_valid_expired_token_returns_false():
-    refresh_token = build_refresh_token(expires_at=datetime.now(tz=UTC) - timedelta(seconds=2))
+    refresh_token = build_refresh_token(
+        expires_at=datetime.now(tz=UTC) - timedelta(seconds=2)
+    )
     assert not refresh_token_crud.is_valid(refresh_token)
-    
