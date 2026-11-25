@@ -129,16 +129,29 @@ async def session(test_engine):
 
 
 @pytest.fixture
-async def client(session):
+async def override_session(session):
     async def override_get_session():
         yield session
 
     app.dependency_overrides[get_session] = override_get_session
+    yield
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+async def client(override_session):
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
-    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+async def other_client(override_session):
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as ac:
+        yield ac
 
 
 # ------- End -------
@@ -193,6 +206,13 @@ def login_user(client: AsyncClient) -> LoginUserFactory:
         return login_response
 
     return _login_user
+
+
+@pytest.fixture
+async def logged_in(user_credentials, register_user, login_user) -> Response:
+    await register_user(user_credentials)
+    login_response = await login_user(user_credentials)
+    return login_response
 
 
 async def _build_auth_headers(
