@@ -82,6 +82,16 @@ def _set_refresh_cookie(response: Response, raw_token: str) -> None:
     )
 
 
+def _delete_refresh_cookie(response: Response) -> None:
+    settings = get_settings()
+    response.delete_cookie(
+        REFRESH_COOKIE_KEY,
+        path=REFRESH_COOKIE_PATH,
+        samesite=settings.cookie_samesite,
+        secure=settings.cookie_secure,
+    )
+
+
 def _invalid_refresh_token() -> HTTPException:
     return HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token is invalid"
@@ -157,3 +167,24 @@ async def refresh(
     await session.commit()
     _set_refresh_cookie(response, new_refresh_token)
     return Token(access_token=create_access_token(old_refresh_token.user_id))
+
+
+@router.post("/logout", response_class=Response, status_code=status.HTTP_204_NO_CONTENT)
+async def logout(
+    session: SessionDep,
+    response: Response,
+    raw_token: Annotated[str | None, Cookie(alias=REFRESH_COOKIE_KEY)] = None,
+) -> None:
+    if raw_token is None:
+        return
+
+    refresh_token = await refresh_token_crud.get_by_hash(
+        session, hash_refresh_token(raw_token)
+    )
+    if refresh_token is None:
+        _delete_refresh_cookie(response)
+        return
+
+    await refresh_token_crud.revoke_family(session, refresh_token.family_id)
+    await session.commit()
+    _delete_refresh_cookie(response)
