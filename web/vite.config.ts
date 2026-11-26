@@ -1,18 +1,18 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import path from 'node:path'
-import { defineConfig } from 'vite'
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
   devtools: {
     // Remove this `apply` property to enable devtools for build as well
-    apply: 'serve',
+    apply: "serve",
   },
   plugins: [svelte()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
+      $lib: fileURLToPath(new URL("./src/lib", import.meta.url)),
+      $components: fileURLToPath(new URL("./src/components", import.meta.url)),
     },
   },
-})
+});

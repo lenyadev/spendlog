@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "bun@1.4.4",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -20,5 +21,8 @@
     "svelte-check": "^4.7.8",
     "typescript": "~6.0.3",
     "vite": "^8.4.0"
+  },
+  "dependencies": {
+    "sv-router": "^0.19.0"
   }
 }
