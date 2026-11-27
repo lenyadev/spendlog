@@ -4,1099 +4,1099 @@
  */
 
 export interface paths {
-    "/auth/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Register */
-        post: operations["register_auth_register_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/auth/register": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Login */
-        post: operations["login_auth_login_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Register */
+    post: operations["register_auth_register_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Me */
-        get: operations["me_auth_me_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Login */
+    post: operations["login_auth_login_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Refresh */
-        post: operations["refresh_auth_refresh_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Me */
+    get: operations["me_auth_me_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Logout */
-        post: operations["logout_auth_logout_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Refresh */
+    post: operations["refresh_auth_refresh_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/categories/{category_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Category */
-        get: operations["get_category_categories__category_id__get"];
-        /** Update Category */
-        put: operations["update_category_categories__category_id__put"];
-        post?: never;
-        /** Delete Category */
-        delete: operations["delete_category_categories__category_id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Logout */
+    post: operations["logout_auth_logout_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/categories/{category_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get All Categories */
-        get: operations["get_all_categories_categories_get"];
-        put?: never;
-        /** Create Category */
-        post: operations["create_category_categories_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Category */
+    get: operations["get_category_categories__category_id__get"];
+    /** Update Category */
+    put: operations["update_category_categories__category_id__put"];
+    post?: never;
+    /** Delete Category */
+    delete: operations["delete_category_categories__category_id__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/categories": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Transaction Page */
-        get: operations["get_transaction_page_transactions_get"];
-        put?: never;
-        /** Create Transaction */
-        post: operations["create_transaction_transactions_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get All Categories */
+    get: operations["get_all_categories_categories_get"];
+    put?: never;
+    /** Create Category */
+    post: operations["create_category_categories_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/transactions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/transactions/{transaction_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Transaction */
-        get: operations["get_transaction_transactions__transaction_id__get"];
-        /** Update Transaction */
-        put: operations["update_transaction_transactions__transaction_id__put"];
-        post?: never;
-        /** Delete Transaction */
-        delete: operations["delete_transaction_transactions__transaction_id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Transaction Page */
+    get: operations["get_transaction_page_transactions_get"];
+    put?: never;
+    /** Create Transaction */
+    post: operations["create_transaction_transactions_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/transactions/{transaction_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/limits/current": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Current Usage */
-        get: operations["get_current_usage_limits_current_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Transaction */
+    get: operations["get_transaction_transactions__transaction_id__get"];
+    /** Update Transaction */
+    put: operations["update_transaction_transactions__transaction_id__put"];
+    post?: never;
+    /** Delete Transaction */
+    delete: operations["delete_transaction_transactions__transaction_id__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/limits/current": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/limits": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update Limit */
-        put: operations["update_limit_limits_put"];
-        /** Create Limit */
-        post: operations["create_limit_limits_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Current Usage */
+    get: operations["get_current_usage_limits_current_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/limits": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/reports/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Categories Report */
-        get: operations["get_categories_report_reports_categories_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /** Update Limit */
+    put: operations["update_limit_limits_put"];
+    /** Create Limit */
+    post: operations["create_limit_limits_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/reports/categories": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Health Check */
-        get: operations["health_check_health_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Categories Report */
+    get: operations["get_categories_report_reports_categories_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/health/db": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Health Check Db */
-        get: operations["health_check_db_health_db_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Health Check */
+    get: operations["health_check_health_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/health/db": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /** Health Check Db */
+    get: operations["health_check_db_health_db_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        /** Body_login_auth_login_post */
-        Body_login_auth_login_post: {
-            /** Grant Type */
-            grant_type?: string | null;
-            /** Username */
-            username: string;
-            /**
-             * Password
-             * Format: password
-             */
-            password: string;
-            /**
-             * Scope
-             * @default
-             */
-            scope: string;
-            /** Client Id */
-            client_id?: string | null;
-            /**
-             * Client Secret
-             * Format: password
-             */
-            client_secret?: string | null;
-        };
-        /** CategoryCreate */
-        CategoryCreate: {
-            /** Name */
-            name: string;
-        };
-        /** CategoryRead */
-        CategoryRead: {
-            /** Id */
-            id: number;
-            /** Name */
-            name: string;
-        };
-        /** CategoryReport */
-        CategoryReport: {
-            /** Items */
-            items: components["schemas"]["CategoryTotal"][];
-            /** Total */
-            total: string;
-        };
-        /** CategoryTotal */
-        CategoryTotal: {
-            /** Category Id */
-            category_id: number;
-            /** Category Name */
-            category_name: string;
-            /** Total */
-            total: string;
-        };
-        /** CategoryUpdate */
-        CategoryUpdate: {
-            /** Name */
-            name: string;
-        };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
-        /** LimitCreate */
-        LimitCreate: {
-            /**
-             * Month
-             * Format: date
-             */
-            month: string;
-            /** Amount */
-            amount: number | string;
-        };
-        /** LimitRead */
-        LimitRead: {
-            /**
-             * Month
-             * Format: date
-             */
-            month: string;
-            /** Amount */
-            amount: string;
-            /** Id */
-            id: number;
-        };
-        /** LimitUpdate */
-        LimitUpdate: {
-            /**
-             * Month
-             * Format: date
-             */
-            month: string;
-            /** Amount */
-            amount: number | string;
-        };
-        /** LimitUsage */
-        LimitUsage: {
-            /**
-             * Month
-             * Format: date
-             */
-            month: string;
-            /** Limit */
-            limit: string | null;
-            /** Spent */
-            spent: string;
-            /** Remaining */
-            remaining: string | null;
-            /** Percent Used */
-            percent_used: string | null;
-        };
-        /** Token */
-        Token: {
-            /** Access Token */
-            access_token: string;
-            /**
-             * Token Type
-             * @default bearer
-             */
-            token_type: string;
-        };
-        /** TransactionCreate */
-        TransactionCreate: {
-            type: components["schemas"]["TransactionType"];
-            /** Amount */
-            amount: number | string;
-            /**
-             * Date
-             * Format: date-time
-             */
-            date: string;
-            /** Category Id */
-            category_id: number;
-            /** Comment */
-            comment?: string | null;
-        };
-        /** TransactionPage */
-        TransactionPage: {
-            /** Items */
-            items: components["schemas"]["TransactionRead"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** TransactionRead */
-        TransactionRead: {
-            type: components["schemas"]["TransactionType"];
-            /** Amount */
-            amount: string;
-            /**
-             * Date
-             * Format: date-time
-             */
-            date: string;
-            /** Category Id */
-            category_id: number;
-            /** Comment */
-            comment?: string | null;
-            /** Id */
-            id: number;
-        };
-        /**
-         * TransactionType
-         * @enum {string}
-         */
-        TransactionType: "expense" | "income";
-        /** TransactionUpdate */
-        TransactionUpdate: {
-            type: components["schemas"]["TransactionType"];
-            /** Amount */
-            amount: number | string;
-            /**
-             * Date
-             * Format: date-time
-             */
-            date: string;
-            /** Category Id */
-            category_id: number;
-            /** Comment */
-            comment?: string | null;
-        };
-        /** UserCreate */
-        UserCreate: {
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-            /** Password */
-            password: string;
-        };
-        /** UserRead */
-        UserRead: {
-            /** Id */
-            id: number;
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-        };
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
-            /** Input */
-            input?: unknown;
-            /** Context */
-            ctx?: Record<string, never>;
-        };
+  schemas: {
+    /** Body_login_auth_login_post */
+    Body_login_auth_login_post: {
+      /** Grant Type */
+      grant_type?: string | null;
+      /** Username */
+      username: string;
+      /**
+       * Password
+       * Format: password
+       */
+      password: string;
+      /**
+       * Scope
+       * @default
+       */
+      scope: string;
+      /** Client Id */
+      client_id?: string | null;
+      /**
+       * Client Secret
+       * Format: password
+       */
+      client_secret?: string | null;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** CategoryCreate */
+    CategoryCreate: {
+      /** Name */
+      name: string;
+    };
+    /** CategoryRead */
+    CategoryRead: {
+      /** Id */
+      id: number;
+      /** Name */
+      name: string;
+    };
+    /** CategoryReport */
+    CategoryReport: {
+      /** Items */
+      items: components["schemas"]["CategoryTotal"][];
+      /** Total */
+      total: string;
+    };
+    /** CategoryTotal */
+    CategoryTotal: {
+      /** Category Id */
+      category_id: number;
+      /** Category Name */
+      category_name: string;
+      /** Total */
+      total: string;
+    };
+    /** CategoryUpdate */
+    CategoryUpdate: {
+      /** Name */
+      name: string;
+    };
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components["schemas"]["ValidationError"][];
+    };
+    /** LimitCreate */
+    LimitCreate: {
+      /**
+       * Month
+       * Format: date
+       */
+      month: string;
+      /** Amount */
+      amount: number | string;
+    };
+    /** LimitRead */
+    LimitRead: {
+      /**
+       * Month
+       * Format: date
+       */
+      month: string;
+      /** Amount */
+      amount: string;
+      /** Id */
+      id: number;
+    };
+    /** LimitUpdate */
+    LimitUpdate: {
+      /**
+       * Month
+       * Format: date
+       */
+      month: string;
+      /** Amount */
+      amount: number | string;
+    };
+    /** LimitUsage */
+    LimitUsage: {
+      /**
+       * Month
+       * Format: date
+       */
+      month: string;
+      /** Limit */
+      limit: string | null;
+      /** Spent */
+      spent: string;
+      /** Remaining */
+      remaining: string | null;
+      /** Percent Used */
+      percent_used: string | null;
+    };
+    /** Token */
+    Token: {
+      /** Access Token */
+      access_token: string;
+      /**
+       * Token Type
+       * @default bearer
+       */
+      token_type: string;
+    };
+    /** TransactionCreate */
+    TransactionCreate: {
+      type: components["schemas"]["TransactionType"];
+      /** Amount */
+      amount: number | string;
+      /**
+       * Date
+       * Format: date-time
+       */
+      date: string;
+      /** Category Id */
+      category_id: number;
+      /** Comment */
+      comment?: string | null;
+    };
+    /** TransactionPage */
+    TransactionPage: {
+      /** Items */
+      items: components["schemas"]["TransactionRead"][];
+      /** Total */
+      total: number;
+      /** Limit */
+      limit: number;
+      /** Offset */
+      offset: number;
+    };
+    /** TransactionRead */
+    TransactionRead: {
+      type: components["schemas"]["TransactionType"];
+      /** Amount */
+      amount: string;
+      /**
+       * Date
+       * Format: date-time
+       */
+      date: string;
+      /** Category Id */
+      category_id: number;
+      /** Comment */
+      comment?: string | null;
+      /** Id */
+      id: number;
+    };
+    /**
+     * TransactionType
+     * @enum {string}
+     */
+    TransactionType: "expense" | "income";
+    /** TransactionUpdate */
+    TransactionUpdate: {
+      type: components["schemas"]["TransactionType"];
+      /** Amount */
+      amount: number | string;
+      /**
+       * Date
+       * Format: date-time
+       */
+      date: string;
+      /** Category Id */
+      category_id: number;
+      /** Comment */
+      comment?: string | null;
+    };
+    /** UserCreate */
+    UserCreate: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+    };
+    /** UserRead */
+    UserRead: {
+      /** Id */
+      id: number;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
+    /** ValidationError */
+    ValidationError: {
+      /** Location */
+      loc: (string | number)[];
+      /** Message */
+      msg: string;
+      /** Error Type */
+      type: string;
+      /** Input */
+      input?: unknown;
+      /** Context */
+      ctx?: Record<string, never>;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    register_auth_register_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  register_auth_register_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    login_auth_login_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["Body_login_auth_login_post"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Token"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserCreate"];
+      };
     };
-    me_auth_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserRead"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["UserRead"];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    refresh_auth_refresh_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                refresh_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Token"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  login_auth_login_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    logout_auth_logout_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                refresh_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["Body_login_auth_login_post"];
+      };
     };
-    get_category_categories__category_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                category_id: number;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["Token"];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    update_category_categories__category_id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                category_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CategoryUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  me_auth_me_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    delete_category_categories__category_id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                category_id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["UserRead"];
         };
+      };
     };
-    get_all_categories_categories_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryRead"][];
-                };
-            };
-        };
+  };
+  refresh_auth_refresh_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: {
+        refresh_token?: string | null;
+      };
     };
-    create_category_categories_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CategoryCreate"];
-            };
+        content: {
+          "application/json": components["schemas"]["Token"];
         };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    get_transaction_page_transactions_get: {
-        parameters: {
-            query?: {
-                type?: components["schemas"]["TransactionType"] | null;
-                category_id?: number | null;
-                date_from?: string | null;
-                date_to?: string | null;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  logout_auth_logout_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: {
+        refresh_token?: string | null;
+      };
     };
-    create_transaction_transactions_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransactionCreate"];
-            };
+        content?: never;
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
+      };
     };
-    get_transaction_transactions__transaction_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                transaction_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  get_category_categories__category_id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        category_id: number;
+      };
+      cookie?: never;
     };
-    update_transaction_transactions__transaction_id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                transaction_id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransactionUpdate"];
-            };
+        content: {
+          "application/json": components["schemas"]["CategoryRead"];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    delete_transaction_transactions__transaction_id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                transaction_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  update_category_categories__category_id__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        category_id: number;
+      };
+      cookie?: never;
     };
-    get_current_usage_limits_current_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LimitUsage"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CategoryUpdate"];
+      };
     };
-    update_limit_limits_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LimitUpdate"];
-            };
+        content: {
+          "application/json": components["schemas"]["CategoryRead"];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LimitRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    create_limit_limits_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LimitCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LimitRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  delete_category_categories__category_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        category_id: number;
+      };
+      cookie?: never;
     };
-    get_categories_report_reports_categories_get: {
-        parameters: {
-            query?: {
-                date_from?: string | null;
-                date_to?: string | null;
-                type?: components["schemas"]["TransactionType"] | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryReport"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    health_check_health_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: string;
-                    };
-                };
-            };
-        };
+  };
+  get_all_categories_categories_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    health_check_db_health_db_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: string;
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["CategoryRead"][];
         };
+      };
     };
+  };
+  create_category_categories_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CategoryCreate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_transaction_page_transactions_get: {
+    parameters: {
+      query?: {
+        type?: components["schemas"]["TransactionType"] | null;
+        category_id?: number | null;
+        date_from?: string | null;
+        date_to?: string | null;
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransactionPage"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  create_transaction_transactions_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TransactionCreate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransactionRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_transaction_transactions__transaction_id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        transaction_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransactionRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  update_transaction_transactions__transaction_id__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        transaction_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TransactionUpdate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransactionRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  delete_transaction_transactions__transaction_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        transaction_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_current_usage_limits_current_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LimitUsage"];
+        };
+      };
+    };
+  };
+  update_limit_limits_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LimitUpdate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LimitRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  create_limit_limits_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LimitCreate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LimitRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_categories_report_reports_categories_get: {
+    parameters: {
+      query?: {
+        date_from?: string | null;
+        date_to?: string | null;
+        type?: components["schemas"]["TransactionType"] | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryReport"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  health_check_health_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: string;
+          };
+        };
+      };
+    };
+  };
+  health_check_db_health_db_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: string;
+          };
+        };
+      };
+    };
+  };
 }

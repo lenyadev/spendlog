@@ -8,8 +8,10 @@
     "allowArbitraryExtensions": true,
     "noEmit": true,
     "paths": {
-      "$components": ["./src/components/*"],
-      "$lib": ["./src/lib/*"]
+      "$components": ["./src/components"],
+      "$components/*": ["./src/components/*"],
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"]
     },
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.
