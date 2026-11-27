@@ -7,6 +7,7 @@
     "types": ["svelte", "vite/client"],
     "allowArbitraryExtensions": true,
     "noEmit": true,
+    "composite": true,
     "paths": {
       "$components": ["./src/components"],
       "$components/*": ["./src/components/*"],
