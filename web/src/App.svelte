@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "sv-router";
-  import "./router.ts";
+  import "./router";
 </script>
 
 <a href="/">Home</a>
