@@ -1,4 +1,5 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
@@ -8,7 +9,7 @@ export default defineConfig({
     // Remove this `apply` property to enable devtools for build as well
     apply: "serve",
   },
-  plugins: [svelte()],
+  plugins: [svelte(), tailwindcss()],
   resolve: {
     alias: {
       $lib: fileURLToPath(new URL("./src/lib", import.meta.url)),
