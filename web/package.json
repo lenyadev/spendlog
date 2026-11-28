@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verify": "bun run format:check && bun run lint && bun run check"
+    "verify": "bun run format:check && bun run lint && bun run check",
+    "verify:full": "bun run verify && bun run build",
+    "fix": "prettier --write . && eslint . --fix"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
