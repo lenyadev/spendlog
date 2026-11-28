@@ -43,7 +43,8 @@ body {
 }
 
 .input {
-  border: 1px solid color-mix(in oklab, var(--color-base-content) 30%, transparent);
+  border: 1px solid
+    color-mix(in oklab, var(--color-base-content) 30%, transparent);
   box-shadow: none;
 }
 
@@ -54,9 +55,7 @@ body {
   outline-offset: 0;
 }
 
-.input.input-error
-.input.input-error:focus
-.input.input-error:focus-within {
+.input.input-error .input.input-error:focus .input.input-error:focus-within {
   border-color: var(--color-error);
   outline-color: var(--color-error);
 }
