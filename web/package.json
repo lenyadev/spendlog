@@ -23,6 +23,7 @@
     "@vitejs/devtools": "^0.8.3",
     "@vitejs/devtools-rolldown": "^0.8.3",
     "@vitejs/devtools-vite": "^0.8.3",
+    "daisyui": "^5.8.3",
     "eslint": "^10.16.0",
     "eslint-config-prettier": "^10.1.9",
     "eslint-plugin-svelte": "^3.24.1",
@@ -37,6 +38,8 @@
     "vite": "^8.4.0"
   },
   "dependencies": {
-    "sv-router": "^0.19.0"
+    "@tailwindcss/vite": "^4.3.5",
+    "sv-router": "^0.19.0",
+    "tailwindcss": "^4.3.5"
   }
 }
